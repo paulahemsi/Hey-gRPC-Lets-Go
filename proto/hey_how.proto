@@ -1,0 +1,21 @@
+
+syntax = "proto3";
+package hey_how;
+
+//Request
+message HeyHow {
+	int32 count = 1;
+	string msg = 2;
+}
+
+//Reply
+message LetsGo {
+	int32 count = 1;
+	string msg = 2;
+}
+
+//Service definition
+service HeyHowService {
+	//rpc method heyhow
+	rpc heyhow (HeyHow) returns (LetsGo) {}
+}
