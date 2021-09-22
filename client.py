@@ -7,14 +7,15 @@ import grpc
 def run():
 	counter = 0
 	pid = os.getpid()
-	with grpc.insecure_channel("localhost:666") as channel:
+	with grpc.insecure_channel("localhost:9999") as channel:
 		stub = hey_how_pb2_grpc.HeyHowServiceStub(channel)
 		while True:
 			try:
 				start = time.time()
-				response = stub.heyhow(hey_how_pb2.HeyHow(count=counter))
+				response = stub.heyhow(hey_how_pb2.HeyHow(count=counter, msg="HeyHow"))
 				counter = response.count
 				if counter % 1000 == 0:
+					print(response.msg)
 					print("%4f : resp=%s : procid=%i" % (time.time() - start, response.count, pid))
 			except KeyboardInterrupt:
 				print("KeyboardInterrupt")

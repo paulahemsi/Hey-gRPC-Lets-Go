@@ -6,7 +6,8 @@ import hey_how_pb2 as hey__how__pb2
 
 
 class HeyHowServiceStub(object):
-    """Missing associated documentation comment in .proto file."""
+    """Service definition
+    """
 
     def __init__(self, channel):
         """Constructor.
@@ -15,17 +16,19 @@ class HeyHowServiceStub(object):
             channel: A grpc.Channel.
         """
         self.heyhow = channel.unary_unary(
-                '/HeyHowService/heyhow',
+                '/hey_how.HeyHowService/heyhow',
                 request_serializer=hey__how__pb2.HeyHow.SerializeToString,
                 response_deserializer=hey__how__pb2.LetsGo.FromString,
                 )
 
 
 class HeyHowServiceServicer(object):
-    """Missing associated documentation comment in .proto file."""
+    """Service definition
+    """
 
     def heyhow(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """rpc method heyhow
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -40,13 +43,14 @@ def add_HeyHowServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'HeyHowService', rpc_method_handlers)
+            'hey_how.HeyHowService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
  # This class is part of an EXPERIMENTAL API.
 class HeyHowService(object):
-    """Missing associated documentation comment in .proto file."""
+    """Service definition
+    """
 
     @staticmethod
     def heyhow(request,
@@ -59,7 +63,7 @@ class HeyHowService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/HeyHowService/heyhow',
+        return grpc.experimental.unary_unary(request, target, '/hey_how.HeyHowService/heyhow',
             hey__how__pb2.HeyHow.SerializeToString,
             hey__how__pb2.LetsGo.FromString,
             options, channel_credentials,

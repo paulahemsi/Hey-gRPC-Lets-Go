@@ -3,9 +3,8 @@ gRPC implementation using python
 
 
 >Your next API doesn’t need to be built with REST and JSON. How about gRPC and Protocol Buffers for better performance and structure?
-
-
 quote from [this article](https://towardsdatascience.com/implementing-grpc-server-using-python-9dc42e8daea0) by Martin Heinz
+
 
 `RPC` = **Remote Procedure Call**
 
@@ -62,10 +61,10 @@ pip install grpcio-tools
 To generate server and client interfaces:
 
 ```bash
-python -m grpc_tools.protoc -I./proto --python_out=. --grpc_python_out=. ./proto/hey_how.proto 
+python -m grpc_tools.protoc -I./proto --python_out=./generated --grpc_python_out=./generated ./proto/hey_how.proto 
 ```
 `-I./proto` path to *.proto* files
-`--python_out=. --grpc_python_out=.` where to output the generateds files *_pb2.py* and *_grpc_pb2.py*
+`--python_out=./generated` `--grpc_python_out=./generated` where to output the generateds files *_pb2.py* and *_grpc_pb2.py*
 `./proto/hey_how.proto` path to *.proto* file (yes, we this and the first one too, actuly the first defines tha path and here we need to write also the file name)
 
 now we have out generates files :
@@ -74,21 +73,21 @@ now we have out generates files :
 `*_pb2.py`
 
 
-## in *_pb2_grpc.py:
+### *_pb2_grpc.py:
 
-server component will use 
+`Servicer` - class used by the server to implement the gRPC service
 
 ```py
 class HeyHowServiceServicer(object):
 ```
 
-and client component will use
+`Stub` - class used by the client to connect the gRPC service:
 
 ```py
 class HeyHowServiceStub(object):
 ```
 
-this in pb2_grpc.py
+`Registration funcionn`- needed to register servicer with gRPC server
 
 ```py
 def add_HeyHowServiceServicer_to_server(servicer, server):
@@ -103,6 +102,27 @@ def add_HeyHowServiceServicer_to_server(servicer, server):
             'HeyHowService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 ```
+
+
+in grpc.py we create a class that inherits from the generated Servicer ans contains the methods defined in `.proto`
+
+> All these methods are intended to be overridden in our implementation and here we do just that.
+
+`request` is an instance of our `message LetsGo`, the reply part of the `.proto`file, so we have access to the `msg` message
+
+`context` contains RPC informations, like timeouts limits
+
+```py
+class Echoer (heyhow_pb2_grpc.HeyHowServiceServicer):
+	def Reply(self, request, context):
+		return heyhow_pb2.LetsGo(msg=f'{request.msg}')
+```
+
+>in case you wanted to leverage the response-streaming you could replace return with yield and return multiple responses (in for cycle)
+
+
+
+
 
 do the serialization and deserialization that we will use
 
@@ -131,3 +151,5 @@ response = stub.heyhow()
 
 * [Implementing gRPC server using Python](https://towardsdatascience.com/implementing-grpc-server-using-python-9dc42e8daea0) by Martin Heinz
 * [10000 Messages in 2.18 seconds with Python and gRPC](https://www.youtube.com/watch?v=dQK0VLahrDk) by seanwasere ytbe
+* [gRPC Crash Course - Modes, Examples, Pros & Cons and more](https://www.youtube.com/watch?v=Yw4rkaTc0f8) by Hussein Nasser
+
