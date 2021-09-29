@@ -16,7 +16,7 @@ def run():
 				counter = response.count
 				if counter % 1000 == 0:
 					print(response.msg)
-					print("%4f : resp=%s : procid=%i" % (time.time() - start, response.count, pid))
+					print("%4f : resp=%s " % (time.time() - start, response.count))
 			except KeyboardInterrupt:
 				print("KeyboardInterrupt")
 				channel.unsubscribe(close)
